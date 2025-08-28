@@ -11,3 +11,13 @@
     justify-content: space-between;
     font-weight: bold;
 }
+
+.cardButton{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+
+    &.active{
+        color: red;
+    }
+};
