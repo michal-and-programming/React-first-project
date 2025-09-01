@@ -1,6 +1,7 @@
 import { createStore } from 'redux';
 import initialState from './initialState';
 import { strContains } from '../utils/strContains';
+import shortid from 'shortid';
 
 export const getFilteredCards = ({ cards, searchString }, columnId) => 
   cards.filter(card => card.columnId === columnId && strContains(card.title, searchString)
@@ -25,26 +26,31 @@ export const addFavoriteStyle = payload => ({ type: 'ADD_FAVORITE_STYLE', payloa
 export const favoriteCard = state => state.cards.filter(card => !card.isFavorite === true);
  
 const reducer = (state, action) => {
-  if(action.type === 'ADD_COLUMN') return { 
-    ...state, 
-    columns: [...state.columns, action.payload]
-  };
+  switch(action.type){ 
+    case 'ADD_COLUMN' :
+      return { 
+        ...state, 
+        columns: [...state.columns, { ...action.payload, id: shortid() }]
+      };
 
-  if(action.type === 'ADD_CARD') return {
-    ...state, cards: [...state.cards, action.payload]
-  }
+    case 'ADD_CARD': 
+      return {
+        ...state, cards: [...state.cards, { ...action.payload, id: shortid() }]
+      };
 
-  if(action.type === 'UPDATE_SEARCHSTRING') return { 
-    ...state, searchString: action.payload
-  };
+    case 'UPDATE_SEARCHSTRING':
+      return { 
+        ...state, searchString: action.payload
+      };
 
-  if(action.type === 'ADD_FAVORITE_STYLE') return {
-    ...state, cards: state.cards.map(card => 
-      card.id === action.payload ? {...card, isFavorite: !card.isFavorite} : card
-    )
-  }
-  return state;
-};
+    case 'ADD_FAVORITE_STYLE':
+      return {
+        ...state, cards: state.cards.map(card => 
+        card.id === action.payload ? {...card, isFavorite: !card.isFavorite} : card)
+      };
+    default:
+      return state;
+}};
 
 const store = createStore(
   reducer, //if store is change this will be activated
