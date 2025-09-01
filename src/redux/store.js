@@ -9,9 +9,9 @@ export const getFilteredCards = ({ cards, searchString }, columnId) =>
 
 export const getAllColumns = state => state.columns;
 
-export const addColumn = (data, listId) => ({ type: 'ADD_COLUMN', payload: { ...data, listId} });
+export const addColumn = (data, listId) => ({ type: 'ADD_COLUMN', payload: { data, listId} });
 
-export const addCard = (title, columnId) => ({ type: 'ADD_CARD', payload: { ...title, columnId }});
+export const addCard = (title, columnId) => ({ type: 'ADD_CARD', payload: { title, columnId }});
 
 export const searchString = payload => ({ type: 'UPDATE_SEARCHSTRING', payload });
 
@@ -24,6 +24,8 @@ export const getAllLists = state => state.lists;
 export const addFavoriteStyle = payload => ({ type: 'ADD_FAVORITE_STYLE', payload});
 
 export const favoriteCard = state => state.cards.filter(card => !card.isFavorite === true);
+
+export const addList = (title, description) => ({ type: 'ADD_LIST', payload: { title, description}});
  
 const reducer = (state, action) => {
   switch(action.type){ 
@@ -47,6 +49,11 @@ const reducer = (state, action) => {
       return {
         ...state, cards: state.cards.map(card => 
         card.id === action.payload ? {...card, isFavorite: !card.isFavorite} : card)
+      };
+
+    case 'ADD_LIST':
+      return {
+        ...state , lists: [...state.lists, {...action.payload, id: shortid()}]
       };
     default:
       return state;
